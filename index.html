@@ -119,7 +119,7 @@ src="https://www.facebook.com/tr?id=677418892030962&ev=PageView&noscript=1"
       <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Free</div></div>
       <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Updates</div></div>
     </div>
-    <a class="cta-btn" id="ctaBtn" href="https://telegram.me/MoneyMasteryShiva?text=Yes%20I%20need%20Without%20investment%20work%20sir%20%E2%9D%97">
+    <a class="cta-btn" id="ctaBtn" href="https://telegram.me/AniskaEarn?text=I%20need%20without%20investment%20work%20Mam%20%E2%9C%85">
       <span>✈️</span> Join Telegram Channel
     </a>
     <div class="redirect-box">
@@ -130,29 +130,41 @@ src="https://www.facebook.com/tr?id=677418892030962&ev=PageView&noscript=1"
     <span class="ads-credit">📊 Ads Managed By Sukhdeep</span>
   </div>
   <script>
-    // Fire Lead exactly once per session, whether user clicks the button
-    // or the 10s auto-redirect fires. sessionStorage stops a second Lead
-    // firing if the same visitor refreshes the page and tries again.
-    const TELEGRAM_URL = "https://telegram.me/Gupta676768?text=Yes%20I%20need%20Without%20investment%20work%20mam%20%E2%9C%85";
-    const LEAD_KEY = "leadFired_moneymasteryshiva_green";
-    let leadFired = sessionStorage.getItem(LEAD_KEY) === "1";
+    // Lead fires exactly ONCE per visitor, whether they tap the button or the
+    // 10s timer auto-redirects. The guard is stored in localStorage +
+    // sessionStorage + a cookie, so refreshes, new tabs and in-app browser
+    // restarts can't fire a second Lead.
+    const TELEGRAM_URL = "https://telegram.me/AniskaEarn?text=I%20need%20without%20investment%20work%20Mam%20%E2%9C%85";
+    const LEAD_KEY = "leadFired_moneymastery_aniska";
     let redirected = false;
 
+    function leadAlreadyFired() {
+      try { if (localStorage.getItem(LEAD_KEY) === "1") return true; } catch (e) {}
+      try { if (sessionStorage.getItem(LEAD_KEY) === "1") return true; } catch (e) {}
+      return document.cookie.indexOf(LEAD_KEY + "=1") !== -1;
+    }
+
+    function markLeadFired() {
+      try { localStorage.setItem(LEAD_KEY, "1"); } catch (e) {}
+      try { sessionStorage.setItem(LEAD_KEY, "1"); } catch (e) {}
+      document.cookie = LEAD_KEY + "=1; max-age=31536000; path=/; SameSite=Lax";
+    }
+
     function fireLeadOnce() {
-      if (!leadFired) {
-        leadFired = true;
-        sessionStorage.setItem(LEAD_KEY, "1");
-        fbq('track', 'Lead');
-      }
+      if (leadAlreadyFired()) return;
+      markLeadFired();
+      fbq('track', 'Lead');
     }
 
     function goToTelegram() {
       if (redirected) return;
       redirected = true;
+      clearInterval(timer);
       fireLeadOnce();
+      // short delay so the Pixel request leaves before the page navigates away
       setTimeout(function () {
         window.location.href = TELEGRAM_URL;
-      }, 150);
+      }, 300);
     }
 
     document.getElementById('ctaBtn').addEventListener('click', function (e) {
@@ -166,7 +178,6 @@ src="https://www.facebook.com/tr?id=677418892030962&ev=PageView&noscript=1"
     const timer = setInterval(function () {
       secondsLeft--;
       if (secondsLeft <= 0) {
-        clearInterval(timer);
         countEl.textContent = "0";
         goToTelegram();
       } else {
